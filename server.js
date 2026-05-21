@@ -2,7 +2,7 @@ const express = require("express");
 const app = express();
 const mongoose = require("./config/db")
 const userModel = require("./modules/user")
-const bcrypt= require("bcrypt")
+const bcrypt = require("bcrypt")
 
 
 app.set("view engine", "ejs");
@@ -23,34 +23,42 @@ app.get('/login', (req, res) => {
     res.render("login")
 })
 
-app.post('/login', async (req, res) => {
-    const { userName, password } = req.body;
-    const user = await userModel.findOne({ userName, password });
-    if (user) {
-        res.redirect("/home");
-    } else {
-        res.send("Invalid username or password");
-    }
-})
-
 app.get('/signup', (req, res) => {
     res.render("signup")
 })
 
 app.post('/register', async (req, res) => {
     const { userName, password } = req.body;
-    const user =await userModel.findOne({userName});
-    if(user){
+    const user = await userModel.findOne({ userName });
+    if (user) {
+        console.log("Registration failed: user already exists:", userName);
         return res.send("user already exists")
     }
-    else{
-        const hashp=await bcrypt.hash(password, 10)
-        await userModel.create({
-            userName:userName, 
-            password:hashp
+    else {
+        const hashp = await bcrypt.hash(password, 10)
+        const newUser = await userModel.create({
+            userName: userName,
+            password: hashp
         });
+        console.log("User registered successfully:", newUser);
     }
     res.redirect("/login");
+})
+
+app.post('/login', async (req, res) => {
+    const { userName, password } = req.body;
+    const user = await userModel.findOne({ userName });
+    if (user) {
+        const ismatch = await bcrypt.compare(password, user.password);
+        if (ismatch) {
+            res.redirect("/home");
+        }
+        else {
+            res.send("Invalid password");
+        }
+    } else {
+        res.send("Invalid username");
+    }
 })
 
 app.listen(3000, () => {

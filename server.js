@@ -11,12 +11,24 @@ app.use(morgan('dev'))
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 
+var isLoggedIn = false;
 
-app.get("/", (req, res) => {
+const auth = (req, res, next) => {
+    if (isLoggedIn) {
+        next()
+    }
+    else {
+        res.redirect("/login")
+        //res.send("Unauthorized");
+    }
+}
+
+
+app.get("/", auth, (req, res) => {
     res.render("home")
 })
 
-app.get("/home", (req, res) => {
+app.get("/home", auth, (req, res) => {
     res.render("home")
 })
 
@@ -53,6 +65,7 @@ app.post('/login', async (req, res) => {
         const ismatch = await bcrypt.compare(password, user.password);
         if (ismatch) {
             res.redirect("/home");
+            isLoggedIn = true;
         }
         else {
             res.send("Invalid password");

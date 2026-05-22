@@ -43,6 +43,13 @@ app.post('/products', async (req, res) => {
     res.redirect("/home");
 })
 
+app.post('/delete', async (req, res) => {
+    const { prodName } = req.body;
+    await prodModel.findOneAndDelete({ prodName });
+    res.redirect("/home");
+})
+
+
 app.get('/login', (req, res) => {
     res.render("login")
 })

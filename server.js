@@ -1,12 +1,13 @@
 const express = require("express");
+const bcrypt = require("bcrypt")
+const morgan = require("morgan")
 const app = express();
 const mongoose = require("./config/db")
 const userModel = require("./modules/user")
-const bcrypt = require("bcrypt")
 
 
 app.set("view engine", "ejs");
-
+app.use(morgan('dev'))
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 

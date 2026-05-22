@@ -4,7 +4,9 @@ const bcrypt = require("bcrypt")
 const morgan = require("morgan")
 const app = express();
 const mongoose = require("./config/db")
-const userModel = require("./modules/user")
+const userModel = require("./model/user")
+const prodModel = require("./model/product")
+
 
 
 app.set("view engine", "ejs");
@@ -25,12 +27,20 @@ const auth = (req, res, next) => {
 }
 
 
-app.get("/", auth, (req, res) => {
-    res.render("home")
+app.get("/", auth, async (req, res) => {
+    const products = await prodModel.find();
+    res.render("home", { products })
 })
 
-app.get("/home", auth, (req, res) => {
-    res.render("home")
+app.get("/home", auth, async (req, res) => {
+    const products = await prodModel.find();
+    res.render("home", { products })
+})
+
+app.post('/products', async (req, res) => {
+    const { prodName, prodID, prodPrice, prodQuantity } = req.body;
+    await prodModel.create({ prodName, prodID, prodPrice, prodQuantity });
+    res.redirect("/home");
 })
 
 app.get('/login', (req, res) => {

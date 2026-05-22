@@ -4,13 +4,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Home Page</title>
+    <title>Home | Autodesk</title>
     <style>
         body {
             font-family: sans-serif;
             margin: 20px;
-            max-width: 800px;
+            max-width: 960px;
             line-height: 1.6;
+            color: #222;
         }
 
         nav {
@@ -27,19 +28,157 @@
         nav a:hover {
             text-decoration: underline;
         }
+
+        h2 {
+            margin-top: 30px;
+            color: #333;
+        }
+
+        /* ── Product Table ── */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 12px;
+        }
+
+        thead {
+            background-color: #0066cc;
+            color: #fff;
+        }
+
+        th, td {
+            padding: 10px 14px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        tbody tr:hover {
+            background-color: #f0f7ff;
+        }
+
+        .empty-msg {
+            color: #888;
+            font-style: italic;
+            padding: 12px 0;
+        }
+
+        /* ── Add Product Form ── */
+        .add-form {
+            margin-top: 24px;
+            background: #f8f9fa;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            padding: 20px;
+            max-width: 500px;
+        }
+
+        .add-form h3 {
+            margin-top: 0;
+            color: #0066cc;
+        }
+
+        .form-group {
+            margin-bottom: 12px;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 4px;
+            font-size: 0.9rem;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 8px 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+            font-size: 0.95rem;
+        }
+
+        .btn {
+            background-color: #0066cc;
+            color: #fff;
+            border: none;
+            padding: 9px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.95rem;
+        }
+
+        .btn:hover {
+            background-color: #0052a3;
+        }
     </style>
 </head>
 
 <body>
     <nav>
         <a href="/home">Home</a>
-        <a href="/login">login</a>
+        <a href="/login">Login</a>
     </nav>
     <hr>
 
     <h1>Home Page</h1>
     <p>Welcome to the Autodesk Next-Gen Creative Suite. Here, we build tools that empower designers, engineers, and
         creators to solve the world's most complex challenges.</p>
+
+    <hr>
+
+    <h2>Products</h2>
+
+    <% if (products.length === 0) { %>
+        <p class="empty-msg">No products found. Add one below.</p>
+    <% } else { %>
+        <table>
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Product Name</th>
+                    <th>Product ID</th>
+                    <th>Price (₹)</th>
+                    <th>Quantity</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% products.forEach((prod, index) => { %>
+                <tr>
+                    <td><%= index + 1 %></td>
+                    <td><%= prod.prodName %></td>
+                    <td><%= prod.prodID %></td>
+                    <td><%= prod.prodPrice %></td>
+                    <td><%= prod.prodQuantity %></td>
+                </tr>
+                <% }) %>
+            </tbody>
+        </table>
+    <% } %>
+
+    <!-- Add Product Form -->
+    <div class="add-form">
+        <h3>Add New Product</h3>
+        <form action="/products" method="POST">
+            <div class="form-group">
+                <label for="prodName">Product Name</label>
+                <input type="text" id="prodName" name="prodName" placeholder="e.g. AutoCAD" required>
+            </div>
+            <div class="form-group">
+                <label for="prodID">Product ID</label>
+                <input type="text" id="prodID" name="prodID" placeholder="e.g. AC-001" required>
+            </div>
+            <div class="form-group">
+                <label for="prodPrice">Price</label>
+                <input type="number" id="prodPrice" name="prodPrice" placeholder="e.g. 4999" required>
+            </div>
+            <div class="form-group">
+                <label for="prodQuantity">Quantity</label>
+                <input type="number" id="prodQuantity" name="prodQuantity" placeholder="e.g. 10" required>
+            </div>
+            <button type="submit" class="btn">Add Product</button>
+        </form>
+    </div>
+
 </body>
 
 </html>
